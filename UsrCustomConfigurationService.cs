@@ -44,7 +44,7 @@ namespace Terrasoft.Configuration.UsrCustomNamespace
         public Dictionary<string, Guid> GetUpToDateCurrencyRates()
         {
             var baseCurrencyGuid =  (Guid)SysSettings.GetValue(UserConnection, "PrimaryCurrency");//получение id основной валюты из таблицы [SysSettings] по полю Code
-            var currencyGuidsByNumericCode = new Dictionary<string, Guid>();//создаем новый обьект словаря Guid
+            var currencyGuidsByNumericCode = new Dictionary<string, Guid>();//создаем новый словарь
             var esqCurrency = new EntitySchemaQuery(UserConnection.EntitySchemaManager, "Currency");//подключение к таблице валюты
             var colCurrencyId = esqCurrency.AddColumn("Id");//добавление колонки для выборки
             var colCurrencyNumericCode = esqCurrency.AddColumn("Code");//добавление для выборки
@@ -65,7 +65,7 @@ namespace Terrasoft.Configuration.UsrCustomNamespace
                 else
                 {
                     var currencyNumericCode = entity.GetTypedColumnValue<string>(colCurrencyNumericCode.Name);//получаем Code
-                    currencyGuidsByNumericCode.Add(currencyNumericCode, currencyGuid);//присваеваем currencyGuid в currencyNumericCode 
+                    currencyGuidsByNumericCode.Add(currencyNumericCode, currencyGuid);//заполняем словарь 
                 }
             }
            return  currencyGuidsByNumericCode;
@@ -87,8 +87,8 @@ namespace Terrasoft.Configuration.UsrCustomNamespace
             }
         	
         	
-        	  var wrappedNewRates = new Dictionary<string, CurrencyModel>();//создаем новый обьект словаря  CurrencyModel
-            var newRatesByCurrencyGuid = new Dictionary<Guid, decimal>();//создаем новый обьект словаря Guid
+        	  var wrappedNewRates = new Dictionary<string, CurrencyModel>();//создаем новый словарь  
+            var newRatesByCurrencyGuid = new Dictionary<Guid, decimal>();
 
 
             var requestAddress = $"http://www.floatrates.com/daily/{ baseCurrencyAlphabeticCode }.json"; //запрос к апи 
@@ -121,9 +121,9 @@ namespace Terrasoft.Configuration.UsrCustomNamespace
                         var numericCode = item.Value.numericCode; //дергаем валью numericCode
                         try
                         {
-                            var currencyGuid = currencyGuidsByNumericCode[numericCode];//слияние с джсон numericCode и новый обьект словаря Guid = currencyGuidsByNumericCode
+                            var currencyGuid = currencyGuidsByNumericCode[numericCode];//дергаем по ключу значение
                             var creatioRate = item.Value.inverseRate;//курс с апи 
-                            newRatesByCurrencyGuid.Add(currencyGuid, creatioRate);//новый курс 
+                            newRatesByCurrencyGuid.Add(currencyGuid, creatioRate);//заполняем словарь новым курсом 
                         }
                         catch
                         {
